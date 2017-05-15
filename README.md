@@ -16,11 +16,11 @@ yarn add really-smooth-scroll
 
 ### Usage
 ```js
-const reallySmoothScroll = require('really-smooth-scroll');
+const ReallySmoothScroll = require('really-smooth-scroll');
 // or
-// import reallySmoothScroll from 'really-smooth-scroll';
+// import ReallySmoothScroll from 'really-smooth-scroll';
 
-reallySmoothScroll.shim();
+ReallySmoothScroll.shim();
 // Done. Coundn't be easily.
 
 // If you want to adjust the scrolling sensitivity (Optional)
