@@ -4,7 +4,9 @@
 
 This is it. I have been looking for libraries, shims and tricks for smooth scrolling for way too long on the Internet. And none actually provides the smoothness that I want. THIS ENDS NOW. **(However, this shim only takes effect in desktop browsers, not yet supported for mobile browsers. But soon it will. )**
 
-This shim overrides browser's `window.scrollTo` function. Instead of jumping immediately, it smoothly scrolls to the scroll position (Check demo). If you want the use the old behavior, use `window.oldScrollTo`
+This shim overrides browser's `window.scrollTo` function. Instead of jumping immediately, it smoothly scrolls to the scroll position (Check demo). If you want the use the old behavior, use `window.oldScrollTo`.
+
+The magic algorithm is based on the spring animation in react-motion. [Wanna see why it's awesome?](https://youtu.be/1tavDv5hXpo?t=12m25s)
 
 ### Install
 
