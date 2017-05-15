@@ -4,7 +4,7 @@
 
 This is it. I have been looking for libraries, shims and tricks for smooth scrolling for way too long on the Internet. And none actually provides the smoothness that I want. THIS ENDS NOW. **(However, this shim only takes effect in desktop browsers, not yet supported for mobile browsers. But soon it will. )**
 
-This is a shim that overrides browser's `window.scrollTo` function. Using this shim, instead of jump immediately jump to the scroll position, it smoothly scrolls (Check demo). If you want the use the old behavior, use `window.oldScrollTo`
+This shim overrides browser's `window.scrollTo` function. Instead of jumping immediately, it smoothly scrolls to the scroll position (Check demo). If you want the use the old behavior, use `window.oldScrollTo`
 
 ### Install
 
