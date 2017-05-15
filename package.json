@@ -10,7 +10,8 @@
     "webpack": "1.*"
   },
   "scripts": {
-    "deploy": "gh-pages -d demo"
+    "deploy": "gh-pages -d demo",
+    "build": "webpack --config webpack.prod.config.js"
   },
   "devDependencies": {
     "babel": "^6.23.0",

@@ -96,7 +96,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return;
 	  }
 	
-	  scrollY = stayInRange(0, document.querySelector('html').offsetHeight - window.innerHeight, getSpringVal(scrollY) + deltaY);
+	  scrollY = stayInRange(0, document.querySelector('html').offsetHeight - window.innerHeight,
+	  // getSpringVal(scrollY) + deltaY
+	  window.scrollY + deltaY * 6);
 	  window.scrollTo(window.scrollX, scrollY);
 	}
 	
