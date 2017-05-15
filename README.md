@@ -27,5 +27,5 @@ reallySmoothScroll();
 If you don't use webpack or babel, embed this script to your html
 
 ```html
-<script src="https://cdn.rawgit.com/chuson1996/really-smooth-scroll/6a17ad12/build/really-smooth-scroll.js"></script>
+<script src="https://cdn.rawgit.com/chuson1996/really-smooth-scroll/d1485166/build/really-smooth-scroll.js"></script>
 ```
