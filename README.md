@@ -23,7 +23,7 @@ const ReallySmoothScroll = require('really-smooth-scroll');
 // import ReallySmoothScroll from 'really-smooth-scroll';
 
 ReallySmoothScroll.shim();
-// Done. Coundn't be easily.
+// Done. Coundn't be easier.
 
 // If you want to adjust the scrolling sensitivity (Optional)
 ReallySmoothScroll.config({
