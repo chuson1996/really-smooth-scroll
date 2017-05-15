@@ -24,8 +24,12 @@ reallySmoothScroll();
 // Done. Coundn't be easily.
 ```
 
-If you don't use webpack or babel, embed this script to your html
+If you don't use webpack or babel, embed one of these 2 scripts to your html
 
 ```html
+<!-- Production -->
 <script src="https://cdn.rawgit.com/chuson1996/really-smooth-scroll/d1485166/build/really-smooth-scroll.js"></script>
+
+<!-- Development -->
+<script src="https://rawgit.com/chuson1996/really-smooth-scroll/master/build/really-smooth-scroll.js"></script>
 ```
