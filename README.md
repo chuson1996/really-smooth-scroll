@@ -20,8 +20,14 @@ const reallySmoothScroll = require('really-smooth-scroll');
 // or
 // import reallySmoothScroll from 'really-smooth-scroll';
 
-reallySmoothScroll();
+reallySmoothScroll.shim();
 // Done. Coundn't be easily.
+
+// If you want to adjust the scrolling sensitivity (Optional)
+ReallySmoothScroll.config({
+  mousewheelSensitivity: 6, // Default
+  keydownSensitivity: 6 // Default (When you press arrow down/up key)
+});
 ```
 
 If you don't use webpack or babel, embed one of these 2 scripts to your html

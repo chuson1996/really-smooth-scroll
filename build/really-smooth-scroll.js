@@ -57,6 +57,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	const SmoothScroll = __webpack_require__(1);
 	const spring = __webpack_require__(9);
 	
+	let mousewheelSensitivity = 6;
+	let keydownSensitivity = 6;
+	
 	function getSpringVal(val) {
 	  if (typeof val === 'number') return val;
 	  return val.val;
@@ -98,17 +101,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	  scrollY = stayInRange(0, document.querySelector('html').offsetHeight - window.innerHeight,
 	  // getSpringVal(scrollY) + deltaY
-	  window.scrollY + deltaY * 6);
+	  window.scrollY + deltaY * mousewheelSensitivity);
 	  window.scrollTo(window.scrollX, scrollY);
 	}
 	
 	function onkeydown(e) {
 	  if (e.target === document.body && e.key === 'ArrowDown') {
 	    e.preventDefault();
-	    move(20);
+	    move(keydownSensitivity * 3);
 	  } else if (e.target === document.body && e.key === 'ArrowUp') {
 	    e.preventDefault();
-	    move(-20);
+	    move(-keydownSensitivity * 3);
 	  }
 	}
 	
@@ -119,7 +122,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
-	module.exports = function polyfill() {
+	exports.shim = function shim() {
 	  window.addEventListener('wheel', onmousewheel);
 	  window.addEventListener('keydown', onkeydown);
 	
@@ -131,6 +134,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	      style: { scrollY: spring(y) }
 	    });
 	  };
+	};
+	
+	exports.config = function config(options) {
+	  if (options.mousewheelSensitivity) {
+	    mousewheelSensitivity = options.mousewheelSensitivity;
+	  }
+	  if (options.keydownSensitivity) {
+	    keydownSensitivity = options.keydownSensitivity;
+	  }
 	};
 
 /***/ }),

@@ -1,6 +1,9 @@
 const SmoothScroll = require('./SmoothScroll');
 const spring = require('./spring');
 
+let mousewheelSensitivity = 6;
+let keydownSensitivity = 6;
+
 function getSpringVal(val) {
   if (typeof val === 'number') return val;
   return val.val;
@@ -44,7 +47,7 @@ function move(deltaY) {
     0,
     document.querySelector('html').offsetHeight - window.innerHeight,
     // getSpringVal(scrollY) + deltaY
-    window.scrollY + deltaY * 6
+    window.scrollY + deltaY * mousewheelSensitivity
   );
   window.scrollTo(window.scrollX, scrollY);
 }
@@ -52,10 +55,10 @@ function move(deltaY) {
 function onkeydown(e) {
   if (e.target === document.body && e.key === 'ArrowDown') {
     e.preventDefault();
-    move(20);
+    move(keydownSensitivity * 3);
   } else if (e.target === document.body && e.key === 'ArrowUp') {
     e.preventDefault();
-    move(-20);
+    move(-keydownSensitivity * 3);
   }
 }
 
@@ -67,7 +70,7 @@ function onmousewheel(e) {
 }
 
 
-module.exports = function polyfill() {
+exports.shim = function shim() {
   window.addEventListener('wheel', onmousewheel);
   window.addEventListener('keydown', onkeydown);
 
@@ -79,4 +82,13 @@ module.exports = function polyfill() {
       style: { scrollY: spring(y) },
     });
   };
+}
+
+exports.config = function config(options) {
+  if (options.mousewheelSensitivity) {
+    mousewheelSensitivity = options.mousewheelSensitivity;
+  }
+  if (options.keydownSensitivity) {
+    keydownSensitivity = options.keydownSensitivity;
+  }
 }
