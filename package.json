@@ -2,7 +2,7 @@
   "name": "really-smooth-scroll",
   "main": "build/really-smooth-scroll.js",
   "homepage": "http://chuson1996.github.io/really-smooth-scroll",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "dependencies": {
     "performance-now": "^2.1.0",
