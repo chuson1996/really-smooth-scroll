@@ -126,14 +126,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	  window.addEventListener('wheel', onmousewheel);
 	  window.addEventListener('keydown', onkeydown);
 	
-	  window.oldScrollTo = window.scrollTo.bind(window);
+	  if (!window.oldScrollTo) {
+	    window.oldScrollTo = window.scrollTo.bind(window);
 	
-	  window.scrollTo = (x, y) => {
-	    window.oldScrollTo(x, window.scrollY);
-	    smoothScroll.componentWillReceiveProps({
-	      style: { scrollY: spring(y) }
-	    });
-	  };
+	    window.scrollTo = (x, y) => {
+	      window.oldScrollTo(x, window.scrollY);
+	      smoothScroll.componentWillReceiveProps({
+	        style: { scrollY: spring(y) }
+	      });
+	    };
+	  }
 	};
 	
 	exports.config = function config(options) {
