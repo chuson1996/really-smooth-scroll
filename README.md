@@ -1,6 +1,7 @@
 # really-smooth-scroll
 
-[Demo](http://chuson1996.github.io/really-smooth-scroll)
+[Demo](http://chuson1996.github.io/really-smooth-scroll)  
+[Live Demo](https://youtu.be/aiG4rMLHjUc?t=2m54s)
 
 This is it. I have been looking for libraries, shims and tricks for smooth scrolling for way too long on the Internet. And none actually provides the smoothness that I want. THIS ENDS NOW. **(However, this shim only takes effect in desktop browsers, not yet supported for mobile browsers. But soon it will. )**
 
