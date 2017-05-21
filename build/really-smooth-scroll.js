@@ -54,11 +54,13 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	const SmoothScroll = __webpack_require__(1);
-	const spring = __webpack_require__(9);
+	'use strict';
 	
-	let mousewheelSensitivity = 6;
-	let keydownSensitivity = 6;
+	var SmoothScroll = __webpack_require__(1);
+	var spring = __webpack_require__(9);
+	
+	var mousewheelSensitivity = 6;
+	var keydownSensitivity = 6;
 	
 	function getSpringVal(val) {
 	  if (typeof val === 'number') return val;
@@ -73,10 +75,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	  return Math.abs(a - b);
 	}
 	
-	let moving = false;
-	let scrollY = spring(0);
+	var moving = false;
+	var scrollY = spring(0);
 	
-	const smoothScroll = new SmoothScroll({
+	var smoothScroll = new SmoothScroll({
 	  style: { scrollY: 0 },
 	  defaultStyle: { scrollY: 0 },
 	  onRest: function onRest() {
@@ -89,7 +91,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (difference(getSpringVal(scrollY), Math.round(window.scrollY)) > 4) {
 	      scrollY = window.scrollY;
 	      smoothScroll.componentWillReceiveProps({
-	        style: { scrollY }
+	        style: { scrollY: scrollY }
 	      });
 	    }
 	    moving = true;
@@ -129,7 +131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  if (!window.oldScrollTo) {
 	    window.oldScrollTo = window.scrollTo.bind(window);
 	
-	    window.scrollTo = (x, y) => {
+	    window.scrollTo = function (x, y) {
 	      window.oldScrollTo(x, window.scrollY);
 	      smoothScroll.componentWillReceiveProps({
 	        style: { scrollY: spring(y) }
@@ -151,29 +153,46 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
+	var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	const mapToZero = __webpack_require__(2);
-	const stripStyle = __webpack_require__(3);
-	const stepper = __webpack_require__(4);
-	const defaultNow = __webpack_require__(5);
-	const defaultRaf = __webpack_require__(7);
-	const shouldStopAnimation = __webpack_require__(8);
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	const msPerFrame = 1000 / 60;
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	module.exports = class SmoothScroll {
-	  constructor(props) {
-	    this.clearUnreadPropStyle = destStyle => {
-	      let dirty = false;
-	      let { currentStyle, currentVelocity, lastIdealStyle, lastIdealVelocity } = this.state;
+	var mapToZero = __webpack_require__(2);
+	var stripStyle = __webpack_require__(3);
+	var stepper = __webpack_require__(4);
+	var defaultNow = __webpack_require__(5);
+	var defaultRaf = __webpack_require__(7);
+	var shouldStopAnimation = __webpack_require__(8);
 	
-	      for (let key in destStyle) {
+	var msPerFrame = 1000 / 60;
+	
+	module.exports = function () {
+	  function SmoothScroll(props) {
+	    var _this = this;
+	
+	    _classCallCheck(this, SmoothScroll);
+	
+	    this.clearUnreadPropStyle = function (destStyle) {
+	      var dirty = false;
+	      var _state = _this.state,
+	          currentStyle = _state.currentStyle,
+	          currentVelocity = _state.currentVelocity,
+	          lastIdealStyle = _state.lastIdealStyle,
+	          lastIdealVelocity = _state.lastIdealVelocity;
+	
+	
+	      for (var key in destStyle) {
 	        if (!Object.prototype.hasOwnProperty.call(destStyle, key)) {
 	          continue;
 	        }
 	
-	        const styleValue = destStyle[key];
+	        var styleValue = destStyle[key];
 	        if (typeof styleValue === 'number') {
 	          if (!dirty) {
 	            dirty = true;
@@ -191,72 +210,81 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	
 	      if (dirty) {
-	        this.setState({ currentStyle, currentVelocity, lastIdealStyle, lastIdealVelocity });
+	        _this.setState({ currentStyle: currentStyle, currentVelocity: currentVelocity, lastIdealStyle: lastIdealStyle, lastIdealVelocity: lastIdealVelocity });
 	      }
 	    };
 	
-	    this.startAnimationIfNecessary = () => {
+	    this.startAnimationIfNecessary = function () {
 	      // TODO: when config is {a: 10} and dest is {a: 10} do we raf once and
 	      // call cb? No, otherwise accidental parent rerender causes cb trigger
-	      this.animationID = defaultRaf(timestamp => {
+	      _this.animationID = defaultRaf(function (timestamp) {
 	        // check if we need to animate in the first place
-	        const propsStyle = this.props.style;
-	        if (shouldStopAnimation(this.state.currentStyle, propsStyle, this.state.currentVelocity)) {
-	          if (this.wasAnimating && this.props.onRest) {
-	            this.props.onRest();
+	        var propsStyle = _this.props.style;
+	        if (shouldStopAnimation(_this.state.currentStyle, propsStyle, _this.state.currentVelocity)) {
+	          if (_this.wasAnimating && _this.props.onRest) {
+	            _this.props.onRest();
 	          }
 	
 	          // no need to cancel animationID here; shouldn't have any in flight
-	          this.animationID = null;
-	          this.wasAnimating = false;
-	          this.accumulatedTime = 0;
+	          _this.animationID = null;
+	          _this.wasAnimating = false;
+	          _this.accumulatedTime = 0;
 	          return;
 	        }
 	
-	        this.wasAnimating = true;
+	        _this.wasAnimating = true;
 	
-	        const currentTime = timestamp || defaultNow();
-	        const timeDelta = currentTime - this.prevTime;
-	        this.prevTime = currentTime;
-	        this.accumulatedTime = this.accumulatedTime + timeDelta;
+	        var currentTime = timestamp || defaultNow();
+	        var timeDelta = currentTime - _this.prevTime;
+	        _this.prevTime = currentTime;
+	        _this.accumulatedTime = _this.accumulatedTime + timeDelta;
 	        // more than 10 frames? prolly switched browser tab. Restart
-	        if (this.accumulatedTime > msPerFrame * 10) {
-	          this.accumulatedTime = 0;
+	        if (_this.accumulatedTime > msPerFrame * 10) {
+	          _this.accumulatedTime = 0;
 	        }
 	
-	        if (this.accumulatedTime === 0) {
+	        if (_this.accumulatedTime === 0) {
 	          // no need to cancel animationID here; shouldn't have any in flight
-	          this.animationID = null;
-	          this.startAnimationIfNecessary();
+	          _this.animationID = null;
+	          _this.startAnimationIfNecessary();
 	          return;
 	        }
 	
-	        let currentFrameCompletion = (this.accumulatedTime - Math.floor(this.accumulatedTime / msPerFrame) * msPerFrame) / msPerFrame;
-	        const framesToCatchUp = Math.floor(this.accumulatedTime / msPerFrame);
+	        var currentFrameCompletion = (_this.accumulatedTime - Math.floor(_this.accumulatedTime / msPerFrame) * msPerFrame) / msPerFrame;
+	        var framesToCatchUp = Math.floor(_this.accumulatedTime / msPerFrame);
 	
-	        let newLastIdealStyle = {};
-	        let newLastIdealVelocity = {};
-	        let newCurrentStyle = {};
-	        let newCurrentVelocity = {};
+	        var newLastIdealStyle = {};
+	        var newLastIdealVelocity = {};
+	        var newCurrentStyle = {};
+	        var newCurrentVelocity = {};
 	
-	        for (let key in propsStyle) {
+	        for (var key in propsStyle) {
 	          if (!Object.prototype.hasOwnProperty.call(propsStyle, key)) {
 	            continue;
 	          }
 	
-	          const styleValue = propsStyle[key];
+	          var styleValue = propsStyle[key];
 	          if (typeof styleValue === 'number') {
 	            newCurrentStyle[key] = styleValue;
 	            newCurrentVelocity[key] = 0;
 	            newLastIdealStyle[key] = styleValue;
 	            newLastIdealVelocity[key] = 0;
 	          } else {
-	            let newLastIdealStyleValue = this.state.lastIdealStyle[key];
-	            let newLastIdealVelocityValue = this.state.lastIdealVelocity[key];
-	            for (let i = 0; i < framesToCatchUp; i++) {
-	              [newLastIdealStyleValue, newLastIdealVelocityValue] = stepper(msPerFrame / 1000, newLastIdealStyleValue, newLastIdealVelocityValue, styleValue.val, styleValue.stiffness, styleValue.damping, styleValue.precision);
+	            var newLastIdealStyleValue = _this.state.lastIdealStyle[key];
+	            var newLastIdealVelocityValue = _this.state.lastIdealVelocity[key];
+	            for (var i = 0; i < framesToCatchUp; i++) {
+	              var _stepper = stepper(msPerFrame / 1000, newLastIdealStyleValue, newLastIdealVelocityValue, styleValue.val, styleValue.stiffness, styleValue.damping, styleValue.precision);
+	
+	              var _stepper2 = _slicedToArray(_stepper, 2);
+	
+	              newLastIdealStyleValue = _stepper2[0];
+	              newLastIdealVelocityValue = _stepper2[1];
 	            }
-	            const [nextIdealX, nextIdealV] = stepper(msPerFrame / 1000, newLastIdealStyleValue, newLastIdealVelocityValue, styleValue.val, styleValue.stiffness, styleValue.damping, styleValue.precision);
+	
+	            var _stepper3 = stepper(msPerFrame / 1000, newLastIdealStyleValue, newLastIdealVelocityValue, styleValue.val, styleValue.stiffness, styleValue.damping, styleValue.precision),
+	                _stepper4 = _slicedToArray(_stepper3, 2),
+	                nextIdealX = _stepper4[0],
+	                nextIdealV = _stepper4[1];
 	
 	            newCurrentStyle[key] = newLastIdealStyleValue + (nextIdealX - newLastIdealStyleValue) * currentFrameCompletion;
 	            newCurrentVelocity[key] = newLastIdealVelocityValue + (nextIdealV - newLastIdealVelocityValue) * currentFrameCompletion;
@@ -265,20 +293,20 @@ return /******/ (function(modules) { // webpackBootstrap
 	          }
 	        }
 	
-	        this.animationID = null;
+	        _this.animationID = null;
 	        // the amount we're looped over above
-	        this.accumulatedTime -= framesToCatchUp * msPerFrame;
+	        _this.accumulatedTime -= framesToCatchUp * msPerFrame;
 	
-	        this.setState({
+	        _this.setState({
 	          currentStyle: newCurrentStyle,
 	          currentVelocity: newCurrentVelocity,
 	          lastIdealStyle: newLastIdealStyle,
 	          lastIdealVelocity: newLastIdealVelocity
 	        });
 	
-	        this.unreadPropStyle = null;
+	        _this.unreadPropStyle = null;
 	
-	        this.startAnimationIfNecessary();
+	        _this.startAnimationIfNecessary();
 	      });
 	    };
 	
@@ -304,48 +332,60 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.startAnimationIfNecessary();
 	  }
 	
-	  defaultState() {
-	    const { defaultStyle, style } = this.props;
-	    const currentStyle = defaultStyle || stripStyle(style);
-	    const currentVelocity = mapToZero(currentStyle);
-	    return {
-	      currentStyle,
-	      currentVelocity,
-	      lastIdealStyle: currentStyle,
-	      lastIdealVelocity: currentVelocity
-	    };
-	  }
+	  _createClass(SmoothScroll, [{
+	    key: 'defaultState',
+	    value: function defaultState() {
+	      var _props = this.props,
+	          defaultStyle = _props.defaultStyle,
+	          style = _props.style;
 	
-	  componentWillReceiveProps(nextProps) {
-	    if (this.unreadPropStyle != null) {
-	      // previous props haven't had the chance to be set yet; set them here
-	      this.clearUnreadPropStyle(this.unreadPropStyle);
+	      var currentStyle = defaultStyle || stripStyle(style);
+	      var currentVelocity = mapToZero(currentStyle);
+	      return {
+	        currentStyle: currentStyle,
+	        currentVelocity: currentVelocity,
+	        lastIdealStyle: currentStyle,
+	        lastIdealVelocity: currentVelocity
+	      };
 	    }
+	  }, {
+	    key: 'componentWillReceiveProps',
+	    value: function componentWillReceiveProps(nextProps) {
+	      if (this.unreadPropStyle != null) {
+	        // previous props haven't had the chance to be set yet; set them here
+	        this.clearUnreadPropStyle(this.unreadPropStyle);
+	      }
 	
-	    this.unreadPropStyle = nextProps.style;
-	    if (this.animationID == null) {
-	      this.prevTime = defaultNow();
-	      this.startAnimationIfNecessary();
+	      this.unreadPropStyle = nextProps.style;
+	      if (this.animationID == null) {
+	        this.prevTime = defaultNow();
+	        this.startAnimationIfNecessary();
+	      }
+	
+	      this.props = _extends({}, this.props, nextProps);
 	    }
+	  }, {
+	    key: 'setState',
+	    value: function setState(newState) {
+	      this.state = _extends({}, this.state, newState);
 	
-	    this.props = _extends({}, this.props, nextProps);
-	  }
+	      window.oldScrollTo(window.scrollX, this.state.currentStyle.scrollY);
+	    }
+	  }]);
 	
-	  setState(newState) {
-	    this.state = _extends({}, this.state, newState);
-	
-	    window.oldScrollTo(window.scrollX, this.state.currentStyle.scrollY);
-	  }
-	};
+	  return SmoothScroll;
+	}();
 
 /***/ }),
 /* 2 */
 /***/ (function(module, exports) {
 
+	"use strict";
+	
 	// currently used to initiate the velocity style object to 0
 	module.exports = function mapToZero(obj) {
-	  let ret = {};
-	  for (const key in obj) {
+	  var ret = {};
+	  for (var key in obj) {
 	    if (Object.prototype.hasOwnProperty.call(obj, key)) {
 	      ret[key] = 0;
 	    }
@@ -357,13 +397,15 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 3 */
 /***/ (function(module, exports) {
 
+	'use strict';
+	
 	/* @flow */
 	// turn {x: {val: 1, stiffness: 1, damping: 2}, y: 2} generated by
 	// `{x: spring(1, {stiffness: 1, damping: 2}), y: 2}` into {x: 1, y: 2}
 	
 	module.exports = function stripStyle(style) {
-	  let ret = {};
-	  for (const key in style) {
+	  var ret = {};
+	  for (var key in style) {
 	    if (!Object.prototype.hasOwnProperty.call(style, key)) {
 	      continue;
 	    }
@@ -376,30 +418,32 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 4 */
 /***/ (function(module, exports) {
 
+	"use strict";
+	
 	/* @flow */
 	
 	// stepper is used a lot. Saves allocation to return the same array wrapper.
 	// This is fine and danger-free against mutations because the callsite
 	// immediately destructures it and gets the numbers inside without passing the
 	// array reference around.
-	let reusedTuple = [0, 0];
+	var reusedTuple = [0, 0];
 	module.exports = function stepper(secondPerFrame, x, v, destX, k, b, precision) {
 	  // Spring stiffness, in kg / s^2
 	
 	  // for animations, destX is really spring length (spring at rest). initial
 	  // position is considered as the stretched/compressed position of a spring
-	  const Fspring = -k * (x - destX);
+	  var Fspring = -k * (x - destX);
 	
 	  // Damping, in kg / s
-	  const Fdamper = -b * v;
+	  var Fdamper = -b * v;
 	
 	  // usually we put mass here, but for animation purposes, specifying mass is a
 	  // bit redundant. you could simply adjust k and b accordingly
 	  // let a = (Fspring + Fdamper) / mass;
-	  const a = Fspring + Fdamper;
+	  var a = Fspring + Fdamper;
 	
-	  const newV = v + a * secondPerFrame;
-	  const newX = x + newV * secondPerFrame;
+	  var newV = v + a * secondPerFrame;
+	  var newX = x + newV * secondPerFrame;
 	
 	  if (Math.abs(newV) < precision && Math.abs(newX - destX) < precision) {
 	    reusedTuple[0] = destX;
@@ -416,7 +460,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(process) {// Generated by CoffeeScript 1.12.2
+	/* WEBPACK VAR INJECTION */(function(process) {"use strict";
+	
+	// Generated by CoffeeScript 1.12.2
 	(function () {
 	  var getNanoSeconds, hrtime, loadTime, moduleLoadTime, nodeLoadTime, upTime;
 	
@@ -429,7 +475,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return (getNanoSeconds() - nodeLoadTime) / 1e6;
 	    };
 	    hrtime = process.hrtime;
-	    getNanoSeconds = function () {
+	    getNanoSeconds = function getNanoSeconds() {
 	      var hr;
 	      hr = hrtime();
 	      return hr[0] * 1e9 + hr[1];
@@ -448,7 +494,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    };
 	    loadTime = new Date().getTime();
 	  }
-	}).call(this);
+	}).call(undefined);
 	
 	//# sourceMappingURL=performance-now.js.map
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
@@ -457,6 +503,8 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 6 */
 /***/ (function(module, exports) {
 
+	'use strict';
+	
 	// shim for using process in browser
 	var process = module.exports = {};
 	
@@ -647,7 +695,9 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(global) {var now = __webpack_require__(5),
+	/* WEBPACK VAR INJECTION */(function(global) {'use strict';
+	
+	var now = __webpack_require__(5),
 	    root = typeof window === 'undefined' ? global : window,
 	    vendors = ['moz', 'webkit'],
 	    suffix = 'AnimationFrame',
@@ -666,7 +716,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      queue = [],
 	      frameDuration = 1000 / 60;
 	
-	  raf = function (callback) {
+	  raf = function raf(callback) {
 	    if (queue.length === 0) {
 	      var _now = now(),
 	          next = Math.max(0, frameDuration - (_now - last));
@@ -698,7 +748,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return id;
 	  };
 	
-	  caf = function (handle) {
+	  caf = function caf(handle) {
 	    for (var i = 0; i < queue.length; i++) {
 	      if (queue[i].handle === handle) {
 	        queue[i].cancelled = true;
@@ -726,10 +776,12 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 8 */
 /***/ (function(module, exports) {
 
+	'use strict';
+	
 	// usage assumption: currentStyle values have already been rendered but it says
 	// nothing of whether currentStyle is stale (see unreadPropStyle)
 	module.exports = function shouldStopAnimation(currentStyle, style, currentVelocity) {
-	  for (let key in style) {
+	  for (var key in style) {
 	    if (!Object.prototype.hasOwnProperty.call(style, key)) {
 	      continue;
 	    }
@@ -738,7 +790,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return false;
 	    }
 	
-	    const styleValue = typeof style[key] === 'number' ? style[key] : style[key].val;
+	    var styleValue = typeof style[key] === 'number' ? style[key] : style[key].val;
 	    // stepper will have already taken care of rounding precision errors, so
 	    // won't have such thing as 0.9999 !=== 1
 	    if (currentStyle[key] !== styleValue) {
@@ -753,22 +805,26 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 9 */
 /***/ (function(module, exports, __webpack_require__) {
 
+	'use strict';
+	
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 	
-	const presets = __webpack_require__(10);
+	var presets = __webpack_require__(10);
 	
-	const defaultConfig = _extends({}, presets.noWobble, {
+	var defaultConfig = _extends({}, presets.noWobble, {
 	  precision: 0.01
 	});
 	
 	module.exports = function spring(val, config) {
-	  return _extends({}, defaultConfig, config, { val });
+	  return _extends({}, defaultConfig, config, { val: val });
 	};
 
 /***/ }),
 /* 10 */
 /***/ (function(module, exports) {
 
+	"use strict";
+	
 	module.exports = {
 	  noWobble: { stiffness: 170, damping: 26 }, // the default, if nothing provided
 	  gentle: { stiffness: 120, damping: 14 },
