@@ -121,19 +121,21 @@ return /******/ (function(modules) { // webpackBootstrap
 	var mousewheelTimeout = void 0;
 	var maxDeltaY = 0;
 	function onmousewheel(e) {
+	  var deltaY = stayInRange(-50, 50, e.deltaY);
+	
 	  if (maxDeltaY === 0 || !forceStop) {
-	    maxDeltaY = e.deltaY;
+	    maxDeltaY = deltaY;
 	    // console.log('Set maxDeltaY');
 	  }
 	  if (document.body.contains(e.target) || e.target === document.body) {
 	    e.preventDefault();
 	    if (forceStop) {
-	      // console.log(Math.abs(maxDeltaY), Math.abs(e.deltaY));
-	      if (Math.abs(maxDeltaY) < Math.abs(e.deltaY) || maxDeltaY * e.deltaY < 0) {
+	      // console.log(Math.abs(maxDeltaY), Math.abs(deltaY));
+	      if (Math.abs(maxDeltaY) < Math.abs(deltaY) || maxDeltaY * deltaY < 0) {
 	        // console.log('Should disable forceStop now 2');
 	        forceStop = false;
 	      } else {
-	        maxDeltaY = e.deltaY;
+	        maxDeltaY = deltaY;
 	      }
 	
 	      if (mousewheelTimeout) clearTimeout(mousewheelTimeout);
@@ -145,7 +147,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return;
 	    }
 	    // console.log('Wheeling', forceStop);
-	    move(e.deltaY);
+	    move(deltaY);
 	  }
 	}
 	
