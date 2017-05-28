@@ -61,6 +61,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	var mousewheelSensitivity = 6;
 	var keydownSensitivity = 6;
+	var forceStop = false;
 	
 	function getSpringVal(val) {
 	  if (typeof val === 'number') return val;
@@ -117,27 +118,66 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 	}
 	
+	var mousewheelTimeout = void 0;
+	var maxDeltaY = 0;
 	function onmousewheel(e) {
+	  if (maxDeltaY === 0 || !forceStop) {
+	    maxDeltaY = e.deltaY;
+	    // console.log('Set maxDeltaY');
+	  }
 	  if (document.body.contains(e.target) || e.target === document.body) {
 	    e.preventDefault();
+	    if (forceStop) {
+	      // console.log(Math.abs(maxDeltaY), Math.abs(e.deltaY));
+	      if (Math.abs(maxDeltaY) < Math.abs(e.deltaY) || maxDeltaY * e.deltaY < 0) {
+	        // console.log('Should disable forceStop now 2');
+	        forceStop = false;
+	      } else {
+	        maxDeltaY = e.deltaY;
+	      }
+	
+	      if (mousewheelTimeout) clearTimeout(mousewheelTimeout);
+	      mousewheelTimeout = setTimeout(function () {
+	        // console.log('Should disable forceStop now');
+	        forceStop = false;
+	        maxDeltaY = 0;
+	      }, 100);
+	      return;
+	    }
+	    // console.log('Wheeling', forceStop);
 	    move(e.deltaY);
 	  }
 	}
 	
+	window._scrollTo = window.scrollTo.bind(window);
 	exports.shim = function shim() {
 	  window.addEventListener('wheel', onmousewheel);
 	  window.addEventListener('keydown', onkeydown);
 	
 	  if (!window.oldScrollTo) {
-	    window.oldScrollTo = window.scrollTo.bind(window);
+	    window.oldScrollTo = function () {
+	      if (moving) {
+	        window.stopScrolling();
+	      }
+	
+	      smoothScroll.componentWillReceiveProps({
+	        style: { scrollY: arguments.length <= 1 ? undefined : arguments[1] }
+	      });
+	    };
 	
 	    window.scrollTo = function (x, y) {
-	      window.oldScrollTo(x, window.scrollY);
+	      window._scrollTo(x, window.scrollY);
 	      smoothScroll.componentWillReceiveProps({
 	        style: { scrollY: spring(y) }
 	      });
 	    };
 	  }
+	  window.stopScrolling = function () {
+	    forceStop = true;
+	    smoothScroll.componentWillReceiveProps({
+	      style: { scrollY: window.scrollY }
+	    });
+	  };
 	};
 	
 	exports.config = function config(options) {
@@ -369,7 +409,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: function setState(newState) {
 	      this.state = _extends({}, this.state, newState);
 	
-	      window.oldScrollTo(window.scrollX, this.state.currentStyle.scrollY);
+	      window._scrollTo(window.scrollX, this.state.currentStyle.scrollY);
 	    }
 	  }]);
 	

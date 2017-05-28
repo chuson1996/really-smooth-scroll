@@ -211,6 +211,6 @@ module.exports = class SmoothScroll {
       ...newState,
     };
 
-    window.oldScrollTo(window.scrollX, this.state.currentStyle.scrollY);
+    window._scrollTo(window.scrollX, this.state.currentStyle.scrollY);
   }
 }

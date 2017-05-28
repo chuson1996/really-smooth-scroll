@@ -3,6 +3,7 @@ const spring = require('./spring');
 
 let mousewheelSensitivity = 6;
 let keydownSensitivity = 6;
+let forceStop = false;
 
 function getSpringVal(val) {
   if (typeof val === 'number') return val;
@@ -62,27 +63,67 @@ function onkeydown(e) {
   }
 }
 
+let mousewheelTimeout;
+let maxDeltaY = 0;
 function onmousewheel(e) {
+  if (maxDeltaY === 0 || !forceStop) {
+    maxDeltaY = e.deltaY;
+    // console.log('Set maxDeltaY');
+  }
   if (document.body.contains(e.target) || e.target === document.body) {
     e.preventDefault();
+    if (forceStop) {
+      // console.log(Math.abs(maxDeltaY), Math.abs(e.deltaY));
+      if (Math.abs(maxDeltaY) < Math.abs(e.deltaY) || maxDeltaY * e.deltaY < 0) {
+        // console.log('Should disable forceStop now 2');
+        forceStop = false;
+      } else {
+        maxDeltaY = e.deltaY;
+      }
+
+      if (mousewheelTimeout) clearTimeout(mousewheelTimeout);
+      mousewheelTimeout = setTimeout(function() {
+        // console.log('Should disable forceStop now');
+        forceStop = false;
+        maxDeltaY = 0;
+      }, 100);
+      return;
+    }
+    // console.log('Wheeling', forceStop);
     move(e.deltaY);
   }
 }
 
 
+window._scrollTo = window.scrollTo.bind(window);
 exports.shim = function shim() {
   window.addEventListener('wheel', onmousewheel);
   window.addEventListener('keydown', onkeydown);
 
   if (!window.oldScrollTo) {
-    window.oldScrollTo = window.scrollTo.bind(window);
+    window.oldScrollTo = (...args) => {
+      if (moving) {
+        window.stopScrolling();
+      }
+
+      smoothScroll.componentWillReceiveProps({
+        style: { scrollY: args[1] },
+      });
+    };
 
     window.scrollTo = (x, y) => {
-      window.oldScrollTo(x, window.scrollY);
+      window._scrollTo(x, window.scrollY);
       smoothScroll.componentWillReceiveProps({
         style: { scrollY: spring(y) },
       });
     };
+
+  }
+  window.stopScrolling = () => {
+    forceStop = true;
+    smoothScroll.componentWillReceiveProps({
+      style: { scrollY: window.scrollY },
+    });
   }
 }
 
